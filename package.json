@@ -1,22 +1,38 @@
 {
   "name": "app",
   "private": true,
+  "prisma": {
+    "seed": "npm run ts-node ./prisma/seed"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ts-node": "ts-node --compiler-options '{\"module\":\"commonjs\"}'",
+    "local-env": "env-cmd -f ./.env.local",
+    "db:push": "npm run local-env prisma db push",
+    "db:seed": "npm run local-env prisma db seed --preview-feature ",
+    "db:studio": "npm run local-env prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "^3.9.2",
+    "env-cmd": "^10.1.0",
     "next": "12.0.10",
+    "prisma": "^3.9.2",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "swr": "^1.2.1",
+    "winston": "^3.6.0"
   },
   "devDependencies": {
     "@types/node": "17.0.17",
     "@types/react": "17.0.39",
     "eslint": "8.9.0",
     "eslint-config-next": "12.0.10",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.5.0",
     "typescript": "4.5.5"
   }
 }
