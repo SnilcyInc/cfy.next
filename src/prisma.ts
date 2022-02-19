@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -10,18 +10,17 @@ declare global {
 
 // declare var NEW_GLOBAL: string
 
+// See here: https://github.com/prisma/prisma-client-js/issues/228#issuecomment-618433162
 let prisma: PrismaClient
 
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient()
 } else {
-  if (!globalThis.prisma) {
-    globalThis.prisma = new PrismaClient()
+  if (!global.prisma) {
+    global.prisma = new PrismaClient()
   }
-  prisma = globalThis.prisma
+
+  prisma = global.prisma
 }
 
 export default prisma
-
-export type IDBUser = Prisma.UserGetPayload<{}>
-export type IDBLink = Prisma.LinkGetPayload<{}>

@@ -1,15 +1,18 @@
 import { GetStaticProps } from 'next'
-import useSWR from 'swr'
 import Image from 'next/image'
-import prisma, { IDBLink } from '@/prisma'
 import logger from '@/logger'
-import { useApi } from '@/api'
-import { IApiLinksData } from 'api/links'
+import { useDB } from '@/services/db/hook'
+import { IEntitieLink } from '@/entities/link'
+import { dbService } from '@/services/db'
 
 const log = logger.pages('Links')
 
-function Link({ link }: { link: IDBLink }) {
-  const { url, imageUrl, title, description, category } = link
+function Link({ link }: { link: IEntitieLink }) {
+  const { url, imageUrl, title, description, category, id } = link
+
+  // const resp = useDB('link', { id })
+  const { data } = useDB<IEntitieLink>('link', { id })
+  console.log(data)
 
   return (
     <div>
@@ -25,20 +28,11 @@ function Link({ link }: { link: IDBLink }) {
   )
 }
 
-export default function Links({ links = [] }: { links: IDBLink[] }) {
-  const { data, error, isLoading } = useApi<IApiLinksData>('/api/links', {
-    page: 0,
-    limit: 1,
-  })
-
-  console.log('Links', { data, error })
-
-  if (isLoading) return 'loading'
-
+export default function Links({ links = [] }: { links: IEntitieLink[] }) {
   return (
     <section>
       <h2>Links</h2>
-      {data.map((link) => (
+      {links.map((link) => (
         <Link link={link} key={link.id} />
       ))}
       <button type="button" onClick={() => {}}>
@@ -49,17 +43,7 @@ export default function Links({ links = [] }: { links: IDBLink[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const links = (
-    await prisma.link.findMany({
-      take: 1,
-    })
-  ).map((item) => {
-    return {
-      ...item,
-      createdAt: String(item.createdAt),
-      updatedAt: String(item.updatedAt),
-    }
-  })
+  const links = await dbService.getRandomLinks(1)
 
   log('debug', 'getStaticProps', links)
 
