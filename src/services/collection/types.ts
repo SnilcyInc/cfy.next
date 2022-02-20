@@ -26,3 +26,9 @@ export type INormalizeData<T extends INormalizeEntitieFrom> = {
   result: INormalizeResult
   error?: any
 }
+
+export type INormalizeEmptyEntitie = { id: string }
+
+export type INormalizeDataWithEmpty<T extends INormalizeEntitieFrom> =
+  | INormalizeData<INormalizeEmptyEntitie>
+  | INormalizeData<T>

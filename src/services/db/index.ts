@@ -24,7 +24,6 @@ export class DBService<T extends INormalizeEntitieFrom> implements IDBService {
 
     return normalizeObjectToCollection<T>(
       this.entitieName,
-      // serializePrepeare(data)
       serializePrepeare(data)
     )
   }

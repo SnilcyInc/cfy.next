@@ -1,15 +1,21 @@
-import { DBService, IDBService } from '@/services/db'
+import { DBService } from '@/services/db'
 import { IEntitieLink, IEntitieLinkId } from './types'
+import {
+  EMPTY_COLLECTION,
+  INormalizeDataWithEmpty,
+} from '@/services/collection'
 
 class LinkDBService extends DBService<IEntitieLink> {
   entitieName = 'link' as const
 
-  async getLinkById(id: IEntitieLinkId) {
+  async getLinkById(
+    id: IEntitieLinkId
+  ): Promise<INormalizeDataWithEmpty<IEntitieLink>> {
     const link = await this.db.link.findFirst({
       where: { id },
     })
 
-    if (!link) return
+    if (!link) return EMPTY_COLLECTION
 
     return this.normalize(link)
   }

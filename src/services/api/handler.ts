@@ -17,7 +17,7 @@ export type IApiHandler<T extends IApiData> = (
 export const createApiHandler =
   <T extends IApiData>(handler: IApiHandler<T>) =>
   (req: NextApiRequest, res: NextApiResponse<T['response']>) => {
-    logger.api('debug', 'createApiHandler', {
+    logger.api('debug', 'ApiHandler', {
       body: req.body,
       coockies: req.cookies,
       query: req.query,

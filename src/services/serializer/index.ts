@@ -1,9 +1,8 @@
 import { AnyObject } from '@/utils/types'
-import { DATE_PREFIX } from './constants'
 
 const replacer = (_: string, value: any) => {
   if (value instanceof Date) {
-    return `${DATE_PREFIX}${Number(value)}`
+    return value.toJSON()
   }
 
   return value

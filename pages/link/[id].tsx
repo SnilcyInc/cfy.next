@@ -8,7 +8,15 @@ const log = logger.pages('Link')
 
 export default function Link(props: { link: IEntitieLink }) {
   console.log(props)
-  return <div>{/* Link: this is id: {link.id}, title: {link.title} */}</div>
+  const { link } = props
+
+  if (!link) return <div>not found</div>
+
+  return (
+    <div>
+      Link: this is id: {link.id}, title: {link.title}
+    </div>
+  )
 }
 
 export const getStaticProps: GetStaticProps = async (args) => {
@@ -16,7 +24,8 @@ export const getStaticProps: GetStaticProps = async (args) => {
   const id = args?.params?.id
 
   if (id && typeof id === 'string') {
-    const link = await linkDB.getLinkById(id)
+    const { collections, result } = await linkDB.getLinkById(id)
+    const link = collections.link[result[0]]
 
     log('debug', 'getStaticProps resutl', link)
     return {

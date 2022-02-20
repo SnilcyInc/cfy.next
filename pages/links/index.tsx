@@ -3,7 +3,9 @@ import Image from 'next/image'
 import logger from '@/logger'
 import { useDB } from '@/services/db/hook'
 import { IEntitieLink } from '@/entities/link'
-import { dbService } from '@/services/db'
+import { linkDB } from '@/entities/link'
+
+const DEFAULT_LINKS_COUNT = 2
 
 const log = logger.pages('Links')
 
@@ -43,7 +45,8 @@ export default function Links({ links = [] }: { links: IEntitieLink[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const links = await dbService.getRandomLinks(1)
+  const { collections, result } = await linkDB.getRandomLinks(2)
+  const links = result.map((id) => collections.link[id])
 
   log('debug', 'getStaticProps', links)
 
