@@ -1,31 +1,54 @@
 import prisma from '@/prisma'
-import { AnyObject } from '@/utils/types'
-import { normalizeDataToCollection } from '@/services/normalizer'
+import {
+  normalizeObjectToCollection,
+  normalizeArrayToCollection,
+} from '@/services/collection'
+import { INormalizeEntitieFrom } from '@/services/collection/types'
+import { serializePrepeare } from '@/services/serializer'
 
-export class DBService {
+export interface IDBService {
+  entitieName: string
+}
+
+export class DBService<T extends INormalizeEntitieFrom> implements IDBService {
   protected db = prisma
-  private normalizeDbData = normalizeDataToCollection
+  entitieName = 'abstract'
+
+  protected normalize(data: T | T[]) {
+    if (Array.isArray(data)) {
+      return normalizeArrayToCollection<T>(
+        this.entitieName,
+        data.map<T>(serializePrepeare)
+      )
+    }
+
+    return normalizeObjectToCollection<T>(
+      this.entitieName,
+      // serializePrepeare(data)
+      serializePrepeare(data)
+    )
+  }
 
   constructor() {
     console.log('DBService constructor')
   }
 
-  protected prepareDbData<T>(data: AnyObject) {
-    console.log('data before', data)
+  // private prepareDbData<T>(data: AnyObject) {
+  //   console.log('data before', data)
 
-    for (const key in data) {
-      const value = data[key]
+  //   for (const key in data) {
+  //     const value = data[key]
 
-      // date to string
-      if (value instanceof Date) {
-        data[key] = Number(value)
-      }
-    }
+  //     // date to string
+  //     if (value instanceof Date) {
+  //       data[key] = `${DATE_PREFIX}${Number(value)}`
+  //     }
+  //   }
 
-    console.log('data after', data)
+  //   console.log('data after', data)
 
-    return data as T
-  }
+  //   return data as T
+  // }
 }
 
 export const dbService = new DBService()

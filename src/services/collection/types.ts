@@ -9,20 +9,20 @@ export type INormalizeEntitieTo = INormalizeEntitieFrom & {
   entitie: INormalizeEntitieName
 }
 
-export type INormalizeCollectionData = {
+export type INormalizeCollectionData<T extends INormalizeEntitieFrom> = {
   [key: INormalizeEntitieName]: {
-    [key: INormalizeEntitieId]: INormalizeEntitieTo
+    [key: INormalizeEntitieId]: INormalizeEntitieTo & T
   }
 }
 
-export type INormalizeCollection = {
-  collections: INormalizeCollectionData
+export type INormalizeCollection<T extends INormalizeEntitieFrom> = {
+  collections: INormalizeCollectionData<T>
 }
 
 export type INormalizeResult = INormalizeEntitieId[]
 
-export type INormalizeData = {
-  collections: INormalizeCollectionData
+export type INormalizeData<T extends INormalizeEntitieFrom> = {
+  collections: INormalizeCollectionData<T>
   result: INormalizeResult
-  error: any
+  error?: any
 }

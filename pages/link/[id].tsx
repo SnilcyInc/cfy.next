@@ -1,8 +1,8 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 import logger from '@/logger'
-import prisma from '@/prisma'
-import { useDB } from '@/services/db/hook'
+// import prisma from '@/prisma'
 import { IEntitieLink } from '@/entities/link'
+import { linkDB } from '@/entities/link'
 
 const log = logger.pages('Link')
 
@@ -13,23 +13,26 @@ export default function Link(props: { link: IEntitieLink }) {
 
 export const getStaticProps: GetStaticProps = async (args) => {
   log('debug', 'getStaticProps', args)
+  const id = args?.params?.id
 
-  const link = await prisma.link.findFirst({
-    where: {
-      id: args?.params?.id as string,
-    },
-  })
+  if (id && typeof id === 'string') {
+    const link = await linkDB.getLinkById(id)
 
-  return {
-    props: {
-      link,
-    },
+    log('debug', 'getStaticProps resutl', link)
+    return {
+      props: {
+        link,
+      },
+    }
   }
+
+  return { props: {} }
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const links = await prisma.link.findMany()
-  const paths = links.map(({ id }) => ({ params: { id } }))
+  const data = await linkDB.getAllLinks()
+
+  const paths = data.result.map((id) => ({ params: { id } }))
 
   log('debug', 'getStaticPaths', paths)
 

@@ -4,17 +4,12 @@ import { IEntitieLink } from '@/entities/link'
 import { linkDB } from '@/entities/link/db'
 
 export default createApiHandler<IDbApiData<IEntitieLink>>(async (req, res) => {
-  const link = await linkDB.getLinkById(req.body.id)
+  const response = await linkDB.getLinkById(req.body.id)
 
-  console.log(link)
+  console.log(response)
 
-  if (link) {
-    return res.json({
-      collection: {
-        link: { [link.id]: link },
-      },
-      result: [link.id],
-    })
+  if (response) {
+    return res.json(response)
   }
 
   return res.status(404).json({

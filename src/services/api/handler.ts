@@ -1,12 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IApiData } from '@/services/api/types'
 import logger from '@/logger'
+import { parse } from '@/services/serializer'
+
+type IApiReq<T extends IApiData> = Omit<NextApiRequest, 'body'> & {
+  body: T['body']
+}
+
+type IApiRes<T extends IApiData> = NextApiResponse<T['response']>
 
 export type IApiHandler<T extends IApiData> = (
-  req: Omit<NextApiRequest, 'body'> & {
-    body: T['body']
-  },
-  res: NextApiResponse<T['response']>
+  req: IApiReq<T>,
+  res: IApiRes<T>
 ) => any
 
 export const createApiHandler =
@@ -18,15 +23,7 @@ export const createApiHandler =
       query: req.query,
     })
 
-    const body = req.body
-
-    if (body && typeof body === 'string') {
-      try {
-        req.body = JSON.parse(req.body)
-      } catch (err) {
-        logger.api('error', 'createApiHandler', err)
-      }
-    }
+    req.body = parse(req.body)
 
     return handler(req, res)
   }
