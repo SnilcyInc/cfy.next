@@ -31,23 +31,6 @@ export class DBService<T extends INormalizeEntitieFrom> implements IDBService {
   constructor() {
     console.log('DBService constructor')
   }
-
-  // private prepareDbData<T>(data: AnyObject) {
-  //   console.log('data before', data)
-
-  //   for (const key in data) {
-  //     const value = data[key]
-
-  //     // date to string
-  //     if (value instanceof Date) {
-  //       data[key] = `${DATE_PREFIX}${Number(value)}`
-  //     }
-  //   }
-
-  //   console.log('data after', data)
-
-  //   return data as T
-  // }
 }
 
 export const dbService = new DBService()

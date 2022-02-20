@@ -1,7 +1,8 @@
 import { stringify } from '@/services/serializer'
+import { log } from '@/services/api/logger'
 
 const fetcher = async ({ url, args }: { url: string; args: any }) => {
-  console.log('fetcher', { url, args })
+  log.debug('fetcher', { url, args })
 
   const res = await fetch(url, {
     method: 'POST',

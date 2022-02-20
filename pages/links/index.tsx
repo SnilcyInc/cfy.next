@@ -1,20 +1,20 @@
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
-import logger from '@/logger'
 import { useDB } from '@/services/db/hook'
 import { IEntitieLink } from '@/entities/link'
 import { linkDB } from '@/entities/link'
+import { createPageLogger } from '@/services/pages/logger'
+
+const log = createPageLogger('Links')
 
 const DEFAULT_LINKS_COUNT = 2
-
-const log = logger.pages('Links')
 
 function Link({ link }: { link: IEntitieLink }) {
   const { url, imageUrl, title, description, category, id } = link
 
   // const resp = useDB('link', { id })
   const { data } = useDB<IEntitieLink>('link', { id })
-  console.log(data)
+  log.debug('Link', data)
 
   return (
     <div>
@@ -31,6 +31,8 @@ function Link({ link }: { link: IEntitieLink }) {
 }
 
 export default function Links({ links = [] }: { links: IEntitieLink[] }) {
+  log.debug('Links', links)
+
   return (
     <section>
       <h2>Links</h2>
@@ -45,10 +47,12 @@ export default function Links({ links = [] }: { links: IEntitieLink[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { collections, result } = await linkDB.getRandomLinks(2)
+  const { collections, result } = await linkDB.getRandomLinks(
+    DEFAULT_LINKS_COUNT
+  )
   const links = result.map((id) => collections.link[id])
 
-  log('debug', 'getStaticProps', links)
+  log.debug('getStaticProps', links)
 
   return {
     props: {

@@ -1,13 +1,12 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
-import logger from '@/logger'
-// import prisma from '@/prisma'
 import { IEntitieLink } from '@/entities/link'
 import { linkDB } from '@/entities/link'
+import { createPageLogger } from '@/services/pages/logger'
 
-const log = logger.pages('Link')
+const log = createPageLogger('Link')
 
 export default function Link(props: { link: IEntitieLink }) {
-  console.log(props)
+  log.debug('Link', props)
   const { link } = props
 
   if (!link) return <div>not found</div>
@@ -20,14 +19,14 @@ export default function Link(props: { link: IEntitieLink }) {
 }
 
 export const getStaticProps: GetStaticProps = async (args) => {
-  log('debug', 'getStaticProps', args)
+  log.debug('getStaticProps', args)
   const id = args?.params?.id
 
   if (id && typeof id === 'string') {
     const { collections, result } = await linkDB.getLinkById(id)
     const link = collections.link[result[0]]
 
-    log('debug', 'getStaticProps resutl', link)
+    log.debug('getStaticProps resutl', link)
     return {
       props: {
         link,
@@ -40,10 +39,9 @@ export const getStaticProps: GetStaticProps = async (args) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await linkDB.getAllLinks()
-
   const paths = data.result.map((id) => ({ params: { id } }))
 
-  log('debug', 'getStaticPaths', paths)
+  log.debug('getStaticPaths', paths)
 
   return {
     paths,

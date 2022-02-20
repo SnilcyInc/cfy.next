@@ -1,4 +1,5 @@
 import { AnyObject } from '@/utils/types'
+import { log } from '@/services/serializer/logger'
 
 const replacer = (_: string, value: any) => {
   if (value instanceof Date) {
@@ -18,22 +19,28 @@ export const serializePrepeare = <T>(obj: AnyObject) =>
   ) as T
 
 export const stringify = (data: any) => {
-  console.log('stringify', typeof data, data)
+  log.debug('stringify', data)
 
   try {
     return JSON.stringify(data, replacer)
   } catch (err) {
-    console.error('stringify', err, data)
+    log.error('stringify', {
+      err,
+      data,
+    })
   }
 }
 
 export const parse = (data: any) => {
-  console.log('parse', typeof data, data)
+  log.debug('parse', data)
   if (typeof data === 'object') return data
 
   try {
     return JSON.parse(data)
   } catch (err) {
-    console.error('parse', err, data)
+    log.error('parse', {
+      err,
+      data,
+    })
   }
 }

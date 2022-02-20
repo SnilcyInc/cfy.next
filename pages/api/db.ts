@@ -1,5 +1,3 @@
-import prisma from '@/prisma'
-import logger from '@/logger'
 import { createApiHandler } from '@/services/api/handler'
 import { IDbApiData } from '@/services/db/types'
 
