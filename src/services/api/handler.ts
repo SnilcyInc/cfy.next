@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IApiData } from '@/services/api/types'
 import { parse } from '@/services/serializer'
-import { log } from '@/services/api/logger'
+import { log } from '@/services/db/logger'
 
 type IApiReq<T extends IApiData> = Omit<NextApiRequest, 'body'> & {
   body: T['body']

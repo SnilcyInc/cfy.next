@@ -1,5 +1,5 @@
 import { stringify } from '@/services/serializer'
-import { log } from '@/services/api/logger'
+import { log } from '@/services/db/logger'
 
 const fetcher = async ({ url, args }: { url: string; args: any }) => {
   log.debug('fetcher', { url, args })

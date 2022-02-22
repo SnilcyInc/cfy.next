@@ -38,7 +38,7 @@ export const getStaticProps: GetStaticProps = async (args) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const data = await linkDB.getAllLinks()
+  const data = await linkDB.getLinks()
   const paths = data.result.map((id) => ({ params: { id } }))
 
   log.debug('getStaticPaths', paths)

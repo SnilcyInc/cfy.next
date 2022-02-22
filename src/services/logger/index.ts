@@ -1,5 +1,3 @@
-import { AnyObject } from '@/utils/types'
-
 const Types = {
   debug: 'D',
   info: 'I',
@@ -7,15 +5,33 @@ const Types = {
   error: 'E',
 }
 
+const TypesEmoji: {
+  [key: string]: string
+} = {
+  D: '⚙️️',
+  I: '❕',
+  W: '⚠️',
+  E: '❌',
+}
+
 type ILevel = keyof typeof Types
+
+type ILoggerParams = {
+  level: string
+  timestamp: number
+  namespace: string
+  message: string
+  data: any
+}
 
 const formatData = (data: any): string => {
   // return String(data)
   return data
 }
 
-const print = (...args: any[]) => {
-  console.log(...args)
+const print = ({ level, namespace, message, data }: ILoggerParams) => {
+  // console.log(...args)
+  console.log([TypesEmoji[level] + ' ', namespace, message].join(' '), data)
 }
 
 export const createLogger = (namespace: string) => {

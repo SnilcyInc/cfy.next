@@ -14,7 +14,7 @@ function Link({ link }: { link: IEntitieLink }) {
 
   // const resp = useDB('link', { id })
   const { data } = useDB<IEntitieLink>('link', { id })
-  log.debug('Link', data)
+  // log.debug('Link', data)
 
   return (
     <div>

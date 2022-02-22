@@ -5,13 +5,11 @@ import {
   INormalizeDataWithEmpty,
 } from '@/services/collection'
 
-class LinkDBService extends DBService<IEntitieLink> {
-  entitieName = 'link' as const
-
+class LinkDBService extends DBService<'link', IEntitieLink> {
   async getLinkById(
     id: IEntitieLinkId
   ): Promise<INormalizeDataWithEmpty<IEntitieLink>> {
-    const link = await this.db.link.findFirst({
+    const link = await this.db.findFirst({
       where: { id },
     })
 
@@ -20,15 +18,10 @@ class LinkDBService extends DBService<IEntitieLink> {
     return this.normalize(link)
   }
 
-  async getRandomLinks(take: number) {
-    const links = await this.db.link.findMany({ take })
-    return this.normalize(links)
-  }
-
-  async getAllLinks() {
-    const links = await this.db.link.findMany()
+  async getLinks(take?: number) {
+    const links = await this.db.findMany({ take })
     return this.normalize(links)
   }
 }
 
-export const linkDB = new LinkDBService()
+export const linkDB = new LinkDBService('link')

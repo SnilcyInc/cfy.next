@@ -5,32 +5,40 @@ import {
 } from '@/services/collection'
 import { INormalizeEntitieFrom } from '@/services/collection/types'
 import { serializePrepeare } from '@/services/serializer'
+import { log } from './logger'
 
-export interface IDBService {
-  entitieName: string
+const DB_ENTITIES = {
+  link: prisma.link,
+  user: prisma.user,
 }
 
-export class DBService<T extends INormalizeEntitieFrom> implements IDBService {
-  protected db = prisma
-  entitieName = 'abstract'
+export type IDBEntitieNames = keyof typeof DB_ENTITIES
 
-  protected normalize(data: T | T[]) {
+export abstract class DBService<
+  N extends IDBEntitieNames,
+  E extends INormalizeEntitieFrom
+> {
+  entitieName: N
+  db: typeof DB_ENTITIES[N]
+
+  constructor(entitieName: N) {
+    log.debug('DBService constructor', entitieName)
+
+    this.entitieName = entitieName
+    this.db = DB_ENTITIES[entitieName]
+  }
+
+  protected normalize(data: E | E[]) {
     if (Array.isArray(data)) {
-      return normalizeArrayToCollection<T>(
+      return normalizeArrayToCollection<E>(
         this.entitieName,
-        data.map<T>(serializePrepeare)
+        data.map<E>(serializePrepeare)
       )
     }
 
-    return normalizeObjectToCollection<T>(
+    return normalizeObjectToCollection<E>(
       this.entitieName,
       serializePrepeare(data)
     )
   }
-
-  constructor() {
-    console.log('DBService constructor')
-  }
 }
-
-export const dbService = new DBService()
